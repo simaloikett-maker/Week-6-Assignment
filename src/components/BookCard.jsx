@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import useReadingList from '../hooks/useReadingList.js';
 
-export default function BookCard({ book }) {
+export default function BookCard({ book, children }) {
   const genreName = typeof book.genre === 'object' ? book.genre?.name : '';
   const { readingList, addBook, removeBook } = useReadingList();
   const bookId = book._id || book.id;
@@ -32,6 +32,7 @@ export default function BookCard({ book }) {
           aria-pressed={isSaved}
           aria-label={`${isSaved ? 'Remove' : 'Add'} ${book.title} ${isSaved ? 'from' : 'to'} reading list`}
         >{isSaved ? 'Saved' : '＋ Save'}</button>
+        {children}
         <Link className="card-arrow" to={`/books/${book._id}`} aria-label={`Read about ${book.title}`}>
           <span aria-hidden="true">↗</span>
         </Link>

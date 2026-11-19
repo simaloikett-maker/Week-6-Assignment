@@ -5,6 +5,9 @@ import ReadingListPage from './pages/ReadingListPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import BookingPage from './pages/BookingPage.jsx';
+import AdminBooksPage from './pages/admin/AdminBooksPage.jsx';
+import AdminBorrowRequestsPage from './pages/admin/AdminBorrowRequestsPage.jsx';
+import AdminBookingsPage from './pages/admin/AdminBookingsPage.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { ReadingListProvider } from './context/ReadingListContext.jsx';
@@ -43,6 +46,13 @@ function AppContent() {
           {status === 'authenticated' ? (
             <>
               <Link to="/booking">Book a space</Link>
+              {user?.role === 'librarian' && (
+                <>
+                  <Link to="/admin/books">Admin: books</Link>
+                  <Link to="/admin/borrow-requests">Borrow requests</Link>
+                  <Link to="/admin/bookings">Bookings</Link>
+                </>
+              )}
               <span className="account-name">{user?.username || user?.email}</span>
               <button type="button" className="nav-button" onClick={handleLogout}>Sign out</button>
             </>
@@ -64,6 +74,9 @@ function AppContent() {
         <Route path="/login" element={status === 'authenticated' ? <Navigate to="/booking" replace /> : <LoginPage />} />
         <Route path="/register" element={status === 'authenticated' ? <Navigate to="/booking" replace /> : <RegisterPage />} />
         <Route path="/booking" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
+        <Route path="/admin/books" element={<ProtectedRoute role="librarian"><AdminBooksPage /></ProtectedRoute>} />
+        <Route path="/admin/borrow-requests" element={<ProtectedRoute role="librarian"><AdminBorrowRequestsPage /></ProtectedRoute>} />
+        <Route path="/admin/bookings" element={<ProtectedRoute role="librarian"><AdminBookingsPage /></ProtectedRoute>} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <footer className="site-footer">

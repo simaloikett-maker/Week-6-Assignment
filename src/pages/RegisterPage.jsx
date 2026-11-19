@@ -17,8 +17,8 @@ export default function RegisterPage() {
     setError('');
     setSubmitting(true);
     try {
-      await register({ username, email, password });
-      navigate(location.state?.from?.pathname || '/booking', { replace: true });
+      const user = await register({ username, email, password });
+      navigate(location.state?.from?.pathname || (user.role === 'librarian' ? '/admin/books' : '/booking'), { replace: true });
     } catch (requestError) {
       setError(requestError.message);
     } finally {

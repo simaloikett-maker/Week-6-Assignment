@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { postJson } from '../api.js';
 
 const spaces = ['Study Room A', 'Study Room B', 'Community Hall', 'Quiet Study Area'];
 
@@ -10,15 +11,27 @@ export default function BookingForm() {
     endTime: '',
   });
   const [saved, setSaved] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   function updateField(event) {
     setBooking((current) => ({ ...current, [event.target.name]: event.target.value }));
     setSaved(false);
+    setError('');
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    setSaved(true);
+    setSubmitting(true);
+    setError('');
+    try {
+      await postJson('/api/bookings', booking);
+      setSaved(true);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -51,8 +64,11 @@ export default function BookingForm() {
           />
         </label>
       </div>
-      <button className="button-primary form-submit" type="submit">Review booking <span aria-hidden="true">→</span></button>
-      {saved && <p className="form-success" role="status">Your booking details are ready. They are saved in this form only.</p>}
+      {error && <p className="form-error" role="alert">{error}</p>}
+      <button className="button-primary form-submit" type="submit" disabled={submitting}>
+        {submitting ? 'Requesting…' : 'Request booking'} <span aria-hidden="true">→</span>
+      </button>
+      {saved && <p className="form-success" role="status">Your space booking is confirmed.</p>}
     </form>
   );
 }

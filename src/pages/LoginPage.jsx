@@ -16,8 +16,8 @@ export default function LoginPage() {
     setError('');
     setSubmitting(true);
     try {
-      await login({ email, password });
-      navigate(location.state?.from?.pathname || '/booking', { replace: true });
+      const user = await login({ email, password });
+      navigate(location.state?.from?.pathname || (user.role === 'librarian' ? '/admin/books' : '/booking'), { replace: true });
     } catch (requestError) {
       setError(requestError.message);
     } finally {

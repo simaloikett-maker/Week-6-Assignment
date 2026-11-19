@@ -41,11 +41,12 @@ When deploying with browser-history routing, configure the static host to serve 
 - Pagination driven by the API response metadata
 - A reading list that can be managed from catalog cards and book detail pages
 - Login and registration backed by the API, with booking access restricted to signed-in patrons
-- A local-only space booking form for a study room, date, and start/end times
+- A space booking form that submits to the API, which rejects overlapping reservations
+- Borrow requests from saved reading-list books, plus librarian-only catalog, borrowing, and booking admin pages
 
 ## Reading list and booking persistence
 
-The reading list is stored in browser `localStorage`, so it survives a page refresh without requiring an account or a backend endpoint. It is specific to the current browser and device; clearing browser storage removes it. Space booking form values are currently held only in React state and are not submitted or persisted. The form is intentionally ready for a booking endpoint to be added later.
+The reading list is stored in browser `localStorage`, so it survives a page refresh without requiring an account or a backend endpoint. It is specific to the current browser and device; clearing browser storage removes it. Space booking form values are held in React state and sent to the API only when the patron submits; confirmed bookings are stored by the backend.
 
 Authentication uses the API's `HttpOnly` session cookie rather than storing a token in browser JavaScript. Login, registration, and profile requests include credentials. Registration signs the patron in immediately after successful account creation so the protected booking page is available without a second manual login.
 
@@ -57,6 +58,7 @@ The Vite development server also proxies `/api` to the catalog service for the a
 - `/register` — create an account; duplicate usernames/emails and other API failures are shown in the form
 - `/booking` — protected space booking form
 - `/reading-list` — view and manage locally saved books
+- `/admin/books`, `/admin/borrow-requests`, and `/admin/bookings` — librarian-only management pages backed by the API
 
 ## Filtering strategy
 
@@ -73,3 +75,6 @@ The animated demo shows browsing, filtering by genre, searching within that genr
 - `GET /genres`
 - `GET /books` with genre, search, page, and limit query parameters
 - `GET /books/:id`
+- Librarian book management uses `POST /books`, `PUT /books/:id`, and `DELETE /books/:id`
+- Patrons request saved books through `POST /api/borrow-requests`; librarians manage requests through `GET` and `PATCH /api/borrow-requests`
+- Patrons create space reservations through `POST /api/bookings`; librarians review them through `GET /api/bookings`

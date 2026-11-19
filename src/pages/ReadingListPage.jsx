@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import BookCard from '../components/BookCard.jsx';
+import BorrowRequestButton from '../components/BorrowRequestButton.jsx';
 import useReadingList from '../hooks/useReadingList.js';
 
 export default function ReadingListPage() {
@@ -18,7 +19,11 @@ export default function ReadingListPage() {
       </div>
       {readingList.length ? (
         <div className="book-grid">
-          {readingList.map((book) => <BookCard key={book._id || book.id} book={book} />)}
+          {readingList.map((book) => (
+            <BookCard key={book._id || book.id} book={book}>
+              <BorrowRequestButton book={book} />
+            </BookCard>
+          ))}
         </div>
       ) : (
         <div className="state-panel">
