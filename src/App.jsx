@@ -71,8 +71,8 @@ function AppContent() {
         <Route path="/" element={<CatalogPage />} />
         <Route path="/books/:id" element={<BookDetailPage />} />
         <Route path="/reading-list" element={<ReadingListPage />} />
-        <Route path="/login" element={status === 'authenticated' ? <Navigate to="/booking" replace /> : <LoginPage />} />
-        <Route path="/register" element={status === 'authenticated' ? <Navigate to="/booking" replace /> : <RegisterPage />} />
+        <Route path="/login" element={status === 'authenticated' ? <Navigate to={user?.role === 'librarian' ? '/admin/books' : '/booking'} replace /> : <LoginPage />} />
+        <Route path="/register" element={status === 'authenticated' ? <Navigate to={user?.role === 'librarian' ? '/admin/books' : '/booking'} replace /> : <RegisterPage />} />
         <Route path="/booking" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
         <Route path="/admin/books" element={<ProtectedRoute role="librarian"><AdminBooksPage /></ProtectedRoute>} />
         <Route path="/admin/borrow-requests" element={<ProtectedRoute role="librarian"><AdminBorrowRequestsPage /></ProtectedRoute>} />
